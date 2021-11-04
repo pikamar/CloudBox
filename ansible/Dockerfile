@@ -15,6 +15,7 @@ RUN apt update && apt upgrade -y && apt install -y wget \
     libbz2-dev \
     libffi-dev \
     zlib1g-dev \
+    zsh \
     && rm -rf /var/lib/apt/lists/*
 
 ARG PYTHON_VERSION
@@ -29,12 +30,13 @@ RUN tar xzf Python-$PYTHON_VERSION.tgz
 WORKDIR /tmp/Python-$PYTHON_VERSION
 RUN ./configure --enable-optimizations --prefix=/usr
 RUN make install
-RUN python3 -V
 
 RUN set -x && \
-    echo "==> Cleaning up..."  && \
-    ls -la /tmp && \
-    rm -rf /tmp/*
+    echo "==> Install OH MY ZSH..."  && \
+    wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh 
+
+# Enable aliases and ZSH
+COPY .bashrc /root
 
 ARG ANSIBLE_VERSION
 ENV ANSIBLE_VERSION=${ANSIBLE_VERSION:-4.7.0}
@@ -59,6 +61,14 @@ ENV ANSIBLE_SSH_PIPELINING True
 ENV PYTHONPATH /ansible/lib
 ENV PATH /ansible/bin:$PATH
 ENV ANSIBLE_LIBRARY /ansible/library
+
+# Install additional ansible roles
+COPY ansible.yaml /tmp/ansible.yaml
+RUN ansible-galaxy collection install -r /tmp/ansible.yaml
+
+RUN set -x && \
+    echo "==> Cleaning up..."  && \
+    rm -rf /tmp/*
 
 WORKDIR /cloud9
 

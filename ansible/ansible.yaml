@@ -1,0 +1,11 @@
+---
+# See more collections here
+# https://docs.ansible.com/ansible/latest/collections/index.html#list-of-collections
+collections:
+  - amazon.aws
+  - azure.azcollection
+  - google.cloud
+  - community.aws
+  - community.azure
+  - community.google
+  - community.general

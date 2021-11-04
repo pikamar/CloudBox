@@ -14,3 +14,9 @@ docker stop ansible
 
 
 docker run --rm -it -v $(pwd):/ansible/playbooks --workdir /ansible/playbooks --entrypoint ansible-playbook pikamar/ansible-ide --version
+
+----- TODO ------
+
+-- 1 --
+Configure ZSH theme agnoster
+https://github.com/agnoster/agnoster-zsh-theme
